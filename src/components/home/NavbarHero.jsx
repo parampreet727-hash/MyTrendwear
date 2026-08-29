@@ -383,7 +383,8 @@ export default function ShoppingHero() {
           mt-10
           grid
           grid-cols-3
-          gap-3
+          gap-2
+          sm:gap-3
           "
           >
 

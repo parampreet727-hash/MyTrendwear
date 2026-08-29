@@ -189,7 +189,7 @@ text-stone-300
 "
 >
 
-"{item.text}"
+{item.text}
 
 </p>
 

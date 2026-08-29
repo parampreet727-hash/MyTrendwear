@@ -1,30 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const images = ["/banner1.webp", "/hero.webp", "/hero2.webp"];
 
 export default function Slider() {
   const [currentImage, setCurrentImage] = useState(0);
+  const touchStartX = useRef(null);
 
+  // Auto-play
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev + 1) % images.length);
     }, 4000);
-
     return () => clearInterval(interval);
   }, []);
 
-  const nextSlide = () => {
+  const nextSlide = () =>
     setCurrentImage((prev) => (prev + 1) % images.length);
+
+  const prevSlide = () =>
+    setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+
+  // Touch swipe handlers
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
   };
 
-  const prevSlide = () => {
-    setCurrentImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const diff = touchStartX.current - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 40) {
+      diff > 0 ? nextSlide() : prevSlide();
+    }
+    touchStartX.current = null;
   };
 
   return (
-    <div className="hidden sm:block relative w-full overflow-hidden">
-      {/* Aspect ratio wrapper: 2:1 on mobile → 16:6 on md → full viewport height on xl */}
-      <div className="relative w-full aspect-2/1 sm:aspect-16/7 md:aspect-16/6 xl:aspect-auto xl:h-screen">
+    <div
+      className="relative w-full overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
+      {/* Aspect ratio: 16:9 on mobile → 21:9 on xl */}
+      <div className="relative w-full aspect-video sm:aspect-16/7 xl:aspect-21/8">
         {/* Slider track */}
         <div
           className="flex w-full h-full transition-transform duration-700 ease-in-out"
@@ -35,20 +52,26 @@ export default function Slider() {
               key={index}
               src={image}
               alt={`Slide ${index + 1}`}
+              loading={index === 0 ? "eager" : "lazy"}
               className="w-full h-full object-cover shrink-0"
             />
           ))}
         </div>
 
+        {/* Gradient overlay for depth */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+
         {/* Previous Button */}
         <button
           onClick={prevSlide}
           aria-label="Previous slide"
-          className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2
+          className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2
                      bg-black/50 text-white rounded-full
-                     w-7 h-7 sm:w-10 sm:h-10 lg:w-12 lg:h-12
-                     text-sm sm:text-xl lg:text-2xl
-                     hover:bg-black/80 transition"
+                     w-8 h-8 sm:w-11 sm:h-11
+                     text-sm sm:text-xl
+                     hover:bg-black/80 transition-all duration-200
+                     flex items-center justify-center
+                     backdrop-blur-sm border border-white/10"
         >
           ❮
         </button>
@@ -57,25 +80,30 @@ export default function Slider() {
         <button
           onClick={nextSlide}
           aria-label="Next slide"
-          className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2
+          className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2
                      bg-black/50 text-white rounded-full
-                     w-7 h-7 sm:w-10 sm:h-10 lg:w-12 lg:h-12
-                     text-sm sm:text-xl lg:text-2xl
-                     hover:bg-black/80 transition"
+                     w-8 h-8 sm:w-11 sm:h-11
+                     text-sm sm:text-xl
+                     hover:bg-black/80 transition-all duration-200
+                     flex items-center justify-center
+                     backdrop-blur-sm border border-white/10"
         >
           ❯
         </button>
 
         {/* Dots */}
-        <div className="absolute bottom-2 sm:bottom-4 lg:bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2">
+        <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
           {images.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentImage(index)}
               aria-label={`Go to slide ${index + 1}`}
               className={`rounded-full transition-all duration-300
-                          w-1.5 h-1.5 sm:w-2.5 sm:h-2.5 lg:w-3 lg:h-3
-                          ${currentImage === index ? "bg-white scale-125" : "bg-white/50 hover:bg-white/80"}`}
+                          ${
+                            currentImage === index
+                              ? "w-6 h-2.5 sm:w-8 bg-white"
+                              : "w-2.5 h-2.5 bg-white/40 hover:bg-white/70"
+                          }`}
             />
           ))}
         </div>

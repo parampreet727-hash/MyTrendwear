@@ -6,25 +6,25 @@ const categories = [
   {
     title: "New Arrivals",
     subtitle: "Latest luxury styles just landed",
-    image: "./WhiteBlue1.webp",
+    image: "/WhiteBlue1.webp",
     link: "/new-arrivals",
   },
   {
     title: "Men Collection",
     subtitle: "Classic elegance & modern essentials",
-    image: "./Oxford-Solid-Black-Shirt-or-Men.webp",
+    image: "/Oxford-Solid-Black-Shirt-or-Men.webp",
     link: "/men",
   },
   {
     title: "Women Collection",
     subtitle: "Elegant looks crafted for confidence",
-    image: "./Shirt7.webp",
+    image: "/Shirt7.webp",
     link: "/women",
   },
   {
     title: "Accessories",
     subtitle: "Complete your signature style",
-    image: "./Backpack-blue.webp",
+    image: "/Backpack-blue.webp",
     link: "/accessories",
   },
 ];
