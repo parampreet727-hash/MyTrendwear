@@ -22,7 +22,7 @@ export default function Slider() {
   };
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="hidden sm:block relative w-full overflow-hidden">
       {/* Aspect ratio wrapper: 2:1 on mobile → 16:6 on md → full viewport height on xl */}
       <div className="relative w-full aspect-2/1 sm:aspect-16/7 md:aspect-16/6 xl:aspect-auto xl:h-screen">
         {/* Slider track */}
