@@ -9,171 +9,85 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import {
-  motion,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
-import {
-  NavLink,
-} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-import {
-  useCart,
-} from "../../context/useCart";
+import { useCart } from "../../context/useCart";
 
 import { trendingProducts as products } from "../../data/trendingProducts";
 
-
-
 const container = {
+  hidden: {
+    opacity: 0,
+  },
 
-hidden:{
- opacity:0
-},
+  show: {
+    opacity: 1,
 
-show:{
- opacity:1,
-
- transition:{
-  staggerChildren:0.15
- }
-}
-
+    transition: {
+      staggerChildren: 0.15,
+    },
+  },
 };
-
-
 
 const cardAnimation = {
+  hidden: {
+    opacity: 0,
+    y: 40,
+  },
 
-hidden:{
- opacity:0,
- y:40
-},
+  show: {
+    opacity: 1,
+    y: 0,
 
-show:{
- opacity:1,
- y:0,
-
- transition:{
-  duration:.5,
-  ease:"easeOut"
- }
-}
-
+    transition: {
+      duration: 0.5,
+      ease: "easeOut",
+    },
+  },
 };
 
+export default function Products() {
+  const { addToCart } = useCart();
 
+  const [wishlist, setWishlist] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("wishlist")) || [];
 
+      return saved;
+    } catch {
+      return [];
+    }
+  });
 
+  const [added, setAdded] = useState(null);
 
-export default function Products(){
+  const toggleWishlist = (id) => {
+    setWishlist((prev) => {
+      const updated = prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id];
 
-const {
- addToCart
-}=useCart();
+      localStorage.setItem("wishlist", JSON.stringify(updated));
 
+      return updated;
+    });
+  };
 
+  const addProductCart = (product) => {
+    addToCart(product);
 
-const [wishlist,setWishlist]=useState(()=>{
+    setAdded(product.id);
 
-try{
+    setTimeout(() => {
+      setAdded(null);
+    }, 1500);
+  };
 
-const saved =
-JSON.parse(
-localStorage.getItem("wishlist")
-)
-|| [];
-
-return saved;
-
-}
-
-catch{
-
-return [];
-
-}
-
-});
-
-const [added,setAdded]=useState(null);
-
-
-
-
-
-
-const toggleWishlist=(id)=>{
-
-
-setWishlist(prev=>{
-
-
-const updated =
-prev.includes(id)
-
-?
-prev.filter(
-item=>item!==id
-)
-
-:
-[
-...prev,
-id
-];
-
-
-
-localStorage.setItem(
-"wishlist",
-JSON.stringify(updated)
-);
-
-
-return updated;
-
-
-});
-
-
-};
-
-
-
-
-
-
-const addProductCart=(product)=>{
-
-
-addToCart(product);
-
-
-setAdded(product.id);
-
-
-
-setTimeout(()=>{
-
-setAdded(null);
-
-},1500);
-
-
-};
-
-
-
-
-
-
-return (
-
-<section
-
-className="
+  return (
+    <section
+      className="
 relative
 overflow-hidden
 
@@ -191,16 +105,11 @@ lg:px-10
 text-[#FAF6E9]
 
 "
+    >
+      {/* Background Glow */}
 
->
-
-
-{/* Background Glow */}
-
-
-<div
-
-className="
+      <div
+        className="
 absolute
 -left-30
 top-20
@@ -215,14 +124,10 @@ bg-yellow-500/10
 blur-[150px]
 
 "
+      />
 
-/>
-
-
-
-<div
-
-className="
+      <div
+        className="
 absolute
 -right-30
 bottom-0
@@ -237,54 +142,35 @@ bg-amber-400/10
 blur-[150px]
 
 "
+      />
 
-/>
-
-
-
-
-
-<div
-className="
+      <div
+        className="
 relative
 mx-auto
 max-w-7xl
 "
->
+      >
+        {/* Heading */}
 
-
-
-
-
-{/* Heading */}
-
-
-<motion.div
-
-initial={{
-opacity:0,
-y:30
-}}
-
-whileInView={{
-opacity:1,
-y:0
-}}
-
-viewport={{
-once:true
-}}
-
-className="
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+          }}
+          className="
 text-center
 "
-
->
-
-
-<div
-
-className="
+        >
+          <div
+            className="
 inline-flex
 items-center
 gap-2
@@ -305,20 +191,13 @@ text-sm
 text-yellow-300
 
 "
+          >
+            <Sparkles size={15} />
+            Premium Collection
+          </div>
 
->
-
-<Sparkles size={15}/>
-
-Premium Collection
-
-</div>
-
-
-
-<h2
-
-className="
+          <h2
+            className="
 mt-5
 
 font-serif
@@ -347,19 +226,12 @@ sm:text-5xl
 lg:text-6xl
 
 "
+          >
+            Trending Products
+          </h2>
 
->
-
-Trending Products
-
-</h2>
-
-
-
-
-<p
-
-className="
+          <p
+            className="
 mx-auto
 
 mt-5
@@ -375,41 +247,22 @@ text-stone-400
 sm:text-base
 
 "
+          >
+            Premium fashion pieces crafted for modern luxury and confidence.
+          </p>
+        </motion.div>
 
->
+        {/* Products */}
 
-Premium fashion pieces crafted for modern luxury and confidence.
-
-</p>
-
-
-</motion.div>
-
-
-
-
-
-
-
-{/* Products */}
-
-
-<motion.div
-
-
-variants={container}
-
-initial="hidden"
-
-whileInView="show"
-
-viewport={{
-once:true,
-amount:.2
-}}
-
-
-className="
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
+          className="
 mt-14
 
 grid
@@ -425,112 +278,46 @@ lg:grid-cols-3
 xl:grid-cols-4
 
 "
-
->
-
-
-<AnimatePresence>
-
-
-{
-
-products.map(product=>(
-
-
-<motion.div
-
-key={product.id}
-
-variants={cardAnimation}
-
-whileHover={{
-y:-10
-}}
-
->
-
-
-<ProductCard
-
-product={product}
-
-liked={
-wishlist.includes(product.id)
+        >
+          <AnimatePresence>
+            {products.map((product) => (
+              <motion.div
+                key={product.id}
+                variants={cardAnimation}
+                whileHover={{
+                  y: -10,
+                }}
+              >
+                <ProductCard
+                  product={product}
+                  liked={wishlist.includes(product.id)}
+                  onLike={() => toggleWishlist(product.id)}
+                  onCart={() => addProductCart(product)}
+                  added={added === product.id}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+    </section>
+  );
 }
-
-onLike={()=>
-toggleWishlist(product.id)
-}
-
-onCart={()=>
-addProductCart(product)
-}
-
-added={
-added===product.id
-}
-
-/>
-
-
-
-</motion.div>
-
-
-))
-
-
-}
-
-
-</AnimatePresence>
-
-
-
-</motion.div>
-
-
-
-
-
-</div>
-
-
-</section>
-
-
-);
-
-}
-
-
-
-
-
-
-
-
 
 function ProductCard({
+  product,
 
-product,
+  liked,
 
-liked,
+  onLike,
 
-onLike,
+  onCart,
 
-onCart,
-
-added
-
-}){
-
-
-return (
-
-<div
-
-className="
+  added,
+}) {
+  return (
+    <div
+      className="
 group
 
 relative
@@ -556,23 +343,10 @@ hover:border-yellow-500/60
 shadow-[0_0_50px_rgba(212,175,55,.08)]
 
 "
-
->
-
-
-
-
-
-<NavLink
-to={`/product/${product.id}`}
->
-
-
-
-
-<div
-
-className="
+    >
+      <NavLink to={`/product/${product.id}`}>
+        <div
+          className="
 relative
 
 overflow-hidden
@@ -580,21 +354,13 @@ overflow-hidden
 rounded-2xl
 
 "
-
->
-
-
-<img
-
-src={product.image}
-
-alt={product.name}
-
-loading="lazy"
-
-decoding="async"
-
-className="
+        >
+          <img
+            src={product.image}
+            alt={product.name}
+            loading="lazy"
+            decoding="async"
+            className="
 h-64
 
 sm:h-72
@@ -612,15 +378,10 @@ duration-700
 group-hover:scale-110
 
 "
+          />
 
-/>
-
-
-
-
-<div
-
-className="
+          <div
+            className="
 absolute
 inset-0
 
@@ -633,14 +394,10 @@ via-transparent
 to-transparent
 
 "
+          />
 
-/>
-
-
-
-<span
-
-className="
+          <span
+            className="
 absolute
 
 left-4
@@ -666,24 +423,13 @@ font-bold
 text-black
 
 "
+          >
+            {product.badge}
+          </span>
+        </div>
 
->
-
-{product.badge}
-
-</span>
-
-
-
-
-</div>
-
-
-
-
-<h3
-
-className="
+        <h3
+          className="
 mt-5
 
 text-lg
@@ -693,24 +439,13 @@ font-bold
 sm:text-xl
 
 "
+        >
+          {product.name}
+        </h3>
+      </NavLink>
 
->
-
-{product.name}
-
-</h3>
-
-
-
-</NavLink>
-
-
-
-
-
-<div
-
-className="
+      <div
+        className="
 mt-3
 
 flex
@@ -720,16 +455,10 @@ justify-between
 items-center
 
 "
-
->
-
-
-
-<div>
-
-<p
-
-className="
+      >
+        <div>
+          <p
+            className="
 text-2xl
 
 font-black
@@ -737,18 +466,12 @@ font-black
 text-yellow-400
 
 "
+          >
+            ₹{product.price}
+          </p>
 
->
-
-₹{product.price}
-
-</p>
-
-
-
-<p
-
-className="
+          <p
+            className="
 text-xs
 
 line-through
@@ -756,60 +479,27 @@ line-through
 text-gray-500
 
 "
+          >
+            ₹{product.oldPrice}
+          </p>
+        </div>
 
->
-
-₹{product.oldPrice}
-
-</p>
-
-</div>
-
-
-
-
-
-<div
-
-className="
+        <div
+          className="
 flex
 
 text-yellow-400
 
 "
+        >
+          {[1, 2, 3, 4, 5].map((i) => (
+            <Star key={i} size={14} fill="currentColor" />
+          ))}
+        </div>
+      </div>
 
->
-
-{
-[1,2,3,4,5].map(i=>(
-
-<Star
-
-key={i}
-
-size={14}
-
-fill="currentColor"
-
-/>
-
-))
-
-}
-
-</div>
-
-
-</div>
-
-
-
-
-
-
-<div
-
-className="
+      <div
+        className="
 mt-5
 
 flex
@@ -817,16 +507,10 @@ flex
 gap-3
 
 "
-
->
-
-
-
-<button
-
-onClick={onCart}
-
-className="
+      >
+        <button
+          onClick={onCart}
+          className="
 flex-1
 
 flex
@@ -863,51 +547,24 @@ hover:scale-105
 active:scale-95
 
 "
+        >
+          {added ? (
+            <>
+              <Check size={18} />
+              Added
+            </>
+          ) : (
+            <>
+              <ShoppingCart size={18} />
+              Cart
+            </>
+          )}
+        </button>
 
->
-
-{
-
-added
-
-?
-
-<>
-
-<Check size={18}/>
-
-Added
-
-</>
-
-:
-
-<>
-
-<ShoppingCart size={18}/>
-
-Cart
-
-</>
-
-}
-
-
-</button>
-
-
-
-
-
-
-
-<button
-
-onClick={onLike}
-
-aria-label="wishlist"
-
-className="
+        <button
+          onClick={onLike}
+          aria-label="wishlist"
+          className="
 rounded-xl
 
 border
@@ -925,39 +582,14 @@ hover:bg-yellow-500
 hover:text-black
 
 "
+        >
+          {liked ? <Check size={18} /> : <Heart size={18} />}
+        </button>
+      </div>
 
->
-
-{
-
-liked
-
-?
-
-<Check size={18}/>
-
-:
-
-<Heart size={18}/>
-
-}
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-
-<NavLink
-
-to={`/product/${product.id}`}
-
-className="
+      <NavLink
+        to={`/product/${product.id}`}
+        className="
 mt-5
 
 flex
@@ -973,20 +605,10 @@ text-sm
 text-yellow-300
 
 "
-
->
-
-View Product
-
-<ArrowRight size={15}/>
-
-</NavLink>
-
-
-
-
-</div>
-
-);
-
+      >
+        View Product
+        <ArrowRight size={15} />
+      </NavLink>
+    </div>
+  );
 }

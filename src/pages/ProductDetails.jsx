@@ -86,7 +86,7 @@ alt={product.name}
 
 className="
 w-full
-max-h-[520px]
+max-h-130
 rounded-3xl
 object-cover
 "
